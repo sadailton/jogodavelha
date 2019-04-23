@@ -1,8 +1,7 @@
-# coding: utf-8
 
+from validador_de_dados import *
 
 def cria_jogo():
-
     jogo = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
     return jogo
@@ -28,8 +27,18 @@ def troca_jogador(jogador: str) -> str:
         return "X"
 
 
-def verifica_jogo(jogo, jogador):
+def valida_jogada(jogo, jogador, jogada):
 
+    if jogo[jogada] == "X" or jogo[jogada] == "O":
+        print(msg_colorida("Posição já jogada.", "vermelho"))
+        return False
+    if jogada > 8 or jogada < 0:
+        return False
+    else:
+        return True
+
+
+def verifica_jogo(jogo, jogador):
     sequencias_vencedoras = [
         [0, 1, 2],
         [3, 4, 5],
@@ -46,7 +55,6 @@ def verifica_jogo(jogo, jogador):
         if jogo[sequencias_vencedoras[i][0]] == jogador \
                 and jogo[sequencias_vencedoras[i][1]] == jogador \
                 and jogo[sequencias_vencedoras[i][2]] == jogador:
-
             return True
 
     return False
@@ -54,34 +62,43 @@ def verifica_jogo(jogo, jogador):
 
 def cadastra_jogada(jogo: object, jogador: str, jogada: int) -> object:
 
-    if jogo[jogada] == "X" or jogo[jogada] == "O":
-        print("Posição já jogada.")
-        return False
-
     jogo[jogada] = jogador
 
     return jogo
 
 
 def main():
-
-    jogo = cria_jogo()
+    print(msg_colorida("Bem vindo ao jogo da velha!!", "verde"))
     jogador: str = "X"
     ganhou = False
-    jogar_novamente = "s"
+    jogar_novamente = valida_sim_nao("Deseja iniciar o jogo? (s/n): ")
 
-    while jogar_novamente == "s":
+    if jogar_novamente:
+        jogo = cria_jogo()
+
+    while jogar_novamente:
+
         imprime_jogo(jogo)
-        jogada: int = int(input("Informe a posição da jogada: "))
+        jogada: int = le_int("Informe a posição da jogada (jogador '{}'): ".format(jogador))
+
+        while not valida_jogada(jogada):
+            print(msg_colorida("Posição invalida!!!", "vermelho"))
+            jogada: int = le_int("Informe a posição da jogada (jogador '{}'): ".format(jogador))
+
         cadastra_jogada(jogo, jogador, jogada)
         ganhou = verifica_jogo(jogo, jogador)
 
         if ganhou:
             imprime_jogo(jogo)
             print("Parabéns!! Você ganhou!!\n")
-            jogar_novamente: str = str(input("Deseja jogar novamente: "))
 
-        jogador = troca_jogador(jogador)
+            jogar_novamente = valida_sim_nao("Deseja jogar novamente? (s/n): ")
+
+            if jogar_novamente:
+                jogo = cria_jogo()
+
+        else:
+            jogador = troca_jogador(jogador)
 
     print("Até mais!!")
 
