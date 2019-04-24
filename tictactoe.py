@@ -1,107 +1,126 @@
-
 from validador_de_dados import *
 
-def cria_jogo():
-    jogo = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+class JogoDaVelha:
+    jogo = []
 
-    return jogo
+    def __init__(self) -> object:
+        self.jogo = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
+    def imprime_jogo(self, jogo):
 
-def imprime_jogo(jogo):
-    for i in range(len(jogo)):
-        print(" {:|^1} ".format(jogo[i]), end=" ")
-        if i == 2:
-            print(end="\n")
-        elif i == 5:
-            print(end="\n")
-        elif i == 8:
-            print(end="\n")
+        print()
 
-    return True
+        for i in range(0, 9):
+            print(" {} |".format(jogo[i]), end=" ")
+            if i == 2:
+                print(end="\n")
+                print("--- ---- ----")
+            if i == 5:
+                print(end="\n")
+                print("--- ---- ----")
 
+        print("\n")
 
-def troca_jogador(jogador: str) -> str:
-    if jogador == 'X':
-        return "O"
-    else:
-        return "X"
-
-
-def valida_jogada(jogo, jogador, jogada):
-
-    if jogo[jogada] == "X" or jogo[jogada] == "O":
-        print(msg_colorida("Posição já jogada.", "vermelho"))
-        return False
-    if jogada > 8 or jogada < 0:
-        return False
-    else:
         return True
 
+    def troca_jogador(self, jogador: str) -> str:
+        if jogador == 'X':
+            return "O"
+        else:
+            return "X"
 
-def verifica_jogo(jogo, jogador):
-    sequencias_vencedoras = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ]
+    def valida_jogada(self, jogo, jogador, jogada):
 
-    for i, value in enumerate(sequencias_vencedoras):
+        if jogada > 8 or jogada < 0:
+            return False
 
-        if jogo[sequencias_vencedoras[i][0]] == jogador \
-                and jogo[sequencias_vencedoras[i][1]] == jogador \
-                and jogo[sequencias_vencedoras[i][2]] == jogador:
+        if jogo[jogada] == "X" or jogo[jogada] == "O":
+            print(msg_colorida("Posição já jogada.", "vermelho"))
+            return False
+
+        else:
             return True
 
-    return False
+    @staticmethod
+    def verifica_jogo(jogo: list, jogador: str) -> int:
+        sequencias_vencedoras = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ]
 
+        for i, value in enumerate(sequencias_vencedoras):
 
-def cadastra_jogada(jogo: object, jogador: str, jogada: int) -> object:
+            if jogo[sequencias_vencedoras[i][0]] == jogador \
+                    and jogo[sequencias_vencedoras[i][1]] == jogador \
+                    and jogo[sequencias_vencedoras[i][2]] == jogador:
+                return 1
 
-    jogo[jogada] = jogador
+        cont: int = 0
+        for i in jogo:
+            if i == 'X' or i == 'O':
+                cont += 1
 
-    return jogo
+        if cont == 9:
+            return 2
+        else:
+            return 0
+
+    def cadastra_jogada(self, jogo: object, jogador: str, jogada: int) -> object:
+
+        jogo[jogada] = jogador
+
+        return jogo
 
 
 def main():
     print(msg_colorida("Bem vindo ao jogo da velha!!", "verde"))
     jogador: str = "X"
-    ganhou = False
+    ganhou = 0
     jogar_novamente = valida_sim_nao("Deseja iniciar o jogo? (s/n): ")
 
     if jogar_novamente:
-        jogo = cria_jogo()
+        jogodavelha = JogoDaVelha()
 
     while jogar_novamente:
 
-        imprime_jogo(jogo)
+        jogodavelha.imprime_jogo(jogodavelha.jogo)
         jogada: int = le_int("Informe a posição da jogada (jogador '{}'): ".format(jogador))
 
-        while not valida_jogada(jogada):
+        while not jogodavelha.valida_jogada(jogodavelha.jogo, jogador, jogada):
             print(msg_colorida("Posição invalida!!!", "vermelho"))
             jogada: int = le_int("Informe a posição da jogada (jogador '{}'): ".format(jogador))
 
-        cadastra_jogada(jogo, jogador, jogada)
-        ganhou = verifica_jogo(jogo, jogador)
+        jogodavelha.cadastra_jogada(jogodavelha.jogo, jogador, jogada)
+        ganhou = jogodavelha.verifica_jogo(jogodavelha.jogo, jogador)
 
-        if ganhou:
-            imprime_jogo(jogo)
+        if ganhou == 1:
+            jogodavelha.imprime_jogo(jogodavelha.jogo)
             print("Parabéns!! Você ganhou!!\n")
 
             jogar_novamente = valida_sim_nao("Deseja jogar novamente? (s/n): ")
 
             if jogar_novamente:
-                jogo = cria_jogo()
+                jogodavelha = JogoDaVelha()
+
+        elif ganhou == 2:
+            jogodavelha.imprime_jogo(jogodavelha.jogo)
+            print("Deu velha!!")
+
+            jogar_novamente = valida_sim_nao("Deseja jogar novamente? (s/n): ")
+
+            if jogar_novamente:
+                jogodavelha = JogoDaVelha()
 
         else:
-            jogador = troca_jogador(jogador)
+            jogador = jogodavelha.troca_jogador(jogador)
 
     print("Até mais!!")
-
 
 if __name__ == '__main__':
     main()
