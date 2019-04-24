@@ -1,5 +1,5 @@
 def msg_colorida(msg: str, cor: str) -> str:
-    """Uma breve descriç~~ao"""
+    """Uma breve descrição"""
     """
     Uma Breve descrição
 
@@ -37,8 +37,8 @@ def valida_sim_nao(msg):
                 return True
             elif resposta == 'n' or resposta == 'N' or resposta == "Não" or resposta == "não":
                 return False
-            else:
-                print(msg_colorida("Resposta inválida!", "vermelho"))
+
+        print(msg_colorida("Resposta inválida!", "vermelho"))
 
 
 def le_int(msg: str):

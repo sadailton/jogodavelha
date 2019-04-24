@@ -7,14 +7,20 @@ class JogoDaVelha:
         self.jogo = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
     def imprime_jogo(self, jogo):
-        for i in range(len(jogo)):
-            print(" {:|^1} ".format(jogo[i]), end=" ")
+
+        print()
+
+        for i in range(0, 9):
+            print(" {} |".format(jogo[i]), end=" ")
             if i == 2:
                 print(end="\n")
-            elif i == 5:
+                print("--- ---- ----")
+            if i == 5:
                 print(end="\n")
-            elif i == 8:
-                print(end="\n")
+                print("--- ---- ----")
+
+        print("\n")
+
         return True
 
     def troca_jogador(self, jogador: str) -> str:
@@ -36,7 +42,7 @@ class JogoDaVelha:
             return True
 
     @staticmethod
-    def verifica_jogo(jogo, jogador):
+    def verifica_jogo(jogo: list, jogador: str) -> int:
         sequencias_vencedoras = [
             [0, 1, 2],
             [3, 4, 5],
@@ -53,9 +59,17 @@ class JogoDaVelha:
             if jogo[sequencias_vencedoras[i][0]] == jogador \
                     and jogo[sequencias_vencedoras[i][1]] == jogador \
                     and jogo[sequencias_vencedoras[i][2]] == jogador:
-                return True
+                return 1
 
-        return False
+        cont: int = 0
+        for i in jogo:
+            if i == 'X' or i == 'O':
+                cont += 1
+
+        if cont == 9:
+            return 2
+        else:
+            return 0
 
     def cadastra_jogada(self, jogo: object, jogador: str, jogada: int) -> object:
 
@@ -67,7 +81,7 @@ class JogoDaVelha:
 def main():
     print(msg_colorida("Bem vindo ao jogo da velha!!", "verde"))
     jogador: str = "X"
-    ganhou = False
+    ganhou = 0
     jogar_novamente = valida_sim_nao("Deseja iniciar o jogo? (s/n): ")
 
     if jogar_novamente:
@@ -85,9 +99,18 @@ def main():
         jogodavelha.cadastra_jogada(jogodavelha.jogo, jogador, jogada)
         ganhou = jogodavelha.verifica_jogo(jogodavelha.jogo, jogador)
 
-        if ganhou:
+        if ganhou == 1:
             jogodavelha.imprime_jogo(jogodavelha.jogo)
             print("Parabéns!! Você ganhou!!\n")
+
+            jogar_novamente = valida_sim_nao("Deseja jogar novamente? (s/n): ")
+
+            if jogar_novamente:
+                jogodavelha = JogoDaVelha()
+
+        elif ganhou == 2:
+            jogodavelha.imprime_jogo(jogodavelha.jogo)
+            print("Deu velha!!")
 
             jogar_novamente = valida_sim_nao("Deseja jogar novamente? (s/n): ")
 
@@ -98,7 +121,6 @@ def main():
             jogador = jogodavelha.troca_jogador(jogador)
 
     print("Até mais!!")
-
 
 if __name__ == '__main__':
     main()
