@@ -1,4 +1,8 @@
 from validador_de_dados import *
+from TicTacToeServer import *
+from Jogador import *
+from minhaThread import *
+
 
 class JogoDaVelha:
     jogo = []
@@ -83,9 +87,27 @@ def main():
     jogador: str = "X"
     ganhou = 0
     jogar_novamente = valida_sim_nao("Deseja iniciar o jogo? (s/n): ")
+    num_jogadores = 2
+    jogadores = []
 
     if jogar_novamente:
         jogodavelha = JogoDaVelha()
+
+        servidor = TicTacToeServer()
+        servidor.inicia_servidor('127.0.0.10', 1234, 2)
+
+        jogador = Jogador()
+        threadJogador = MinhaThread(1, jogador)
+        threadJogador.jogador.cria_jogador(servidor.cria_conexao_jogador(), 'ze', 1)
+
+        threadJogador.start()
+
+
+        #if jogador1.cria_jogador(servidor.cria_conexao_jogador(), 'ze', 1):
+         #   servidor.envia_mensagem(jogador1, "Bem vindo jogador "+jogador1.get_nickname())
+
+        # jogador2.cria_jogador(servidor.cria_conexao_jogador(), 'maria', 2)
+
 
     while jogar_novamente:
 

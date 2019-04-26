@@ -1,28 +1,20 @@
 import socket
 
+HOST = '127.0.0.10'    # Endereco IP do Servidor
+PORT = 1234            # Porta que o Servidor esta
+tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+dest = (HOST, PORT)
+tcp.connect(dest)
 
-class Cliente:
+print('Para sair use CTRL+X\n')
 
-    SERVER = '127.0.0.10'
-    PORT = 12345
+msg = input("Digite alguma coisa: ")
 
-    def __init__(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+while msg != '\x18':
+    tcp.send(bytes(msg, 'utf8'))
+    msg = input("Digite alguma coisa: ")
 
-            s.connect((self.SERVER, self.PORT))
-            s.send(b'X')
+    recebido = tcp.recv(1024)
+    print("Mensagem do servidor: {}", repr(recebido))
 
-            data = s.recv(1024)
-
-        print("Recebido do servidor: {}".format(repr(data)))
-
-
-def main():
-
-    cliente = Cliente()
-
-    cliente.__init__()
-
-
-if __name__ == '__main__':
-    main()
+tcp.close()
